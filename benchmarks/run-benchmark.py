@@ -20,6 +20,8 @@ import argparse
 from scripts.benchmarks import *
 
 delta_version = "1.0.0"
+iceberg_version = "0.13.0"
+spark_version = "3.1"
 
 # Benchmark name to their specifications. See the imported benchmarks.py for details of benchmark.
 
@@ -36,12 +38,16 @@ benchmarks = {
     "tpcds-3tb-delta-load": DeltaTPCDSDataLoadSpec(delta_version=delta_version, scale_in_gb=3000),
     "tpcds-1gb-parquet-load": ParquetTPCDSDataLoadSpec(scale_in_gb=1),
     "tpcds-3tb-parquet-load": ParquetTPCDSDataLoadSpec(scale_in_gb=3000),
+    "tpcds-1gb-iceberg-load": IcebergTPCDSDataLoadSpec(iceberg_version=iceberg_version, scale_in_gb=1, spark_version=spark_version),
+    "tpcds-3tb-iceberg-load": IcebergTPCDSDataLoadSpec(iceberg_version=iceberg_version, scale_in_gb=3000, spark_version=spark_version),
 
     # TPC-DS benchmark
     "tpcds-1gb-delta": DeltaTPCDSBenchmarkSpec(delta_version=delta_version, scale_in_gb=1),
     "tpcds-3tb-delta": DeltaTPCDSBenchmarkSpec(delta_version=delta_version, scale_in_gb=3000),
     "tpcds-1gb-parquet": ParquetTPCDSBenchmarkSpec(scale_in_gb=1),
     "tpcds-3tb-parquet": ParquetTPCDSBenchmarkSpec(scale_in_gb=3000),
+    "tpcds-1gb-iceberg": IcebergTPCDSBenchmarkSpec(iceberg_version=iceberg_version, scale_in_gb=1, spark_version=spark_version),
+    "tpcds-3tb-iceberg": IcebergTPCDSBenchmarkSpec(iceberg_version=iceberg_version, scale_in_gb=3000, spark_version=spark_version),
 
 }
 

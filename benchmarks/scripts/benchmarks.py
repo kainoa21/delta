@@ -116,6 +116,49 @@ class TPCDSBenchmarkSpec(BenchmarkSpec):
             "--scale-in-gb", str(scale_in_gb)
         ])
 
+# ============== Iceberg benchmark specifications ==============
+
+
+class IcebergBenchmarkSpec(BenchmarkSpec):
+    """
+    Specification of a benchmark using the Iceberg format
+    """
+    def __init__(self, iceberg_version, benchmark_main_class, main_class_args=None, scala_version="2.12", spark_version="3.1", **kwargs):
+        iceberg_spark_confs = [
+            "spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",
+            "spark.sql.catalog.spark_catalog=org.apache.iceberg.spark.SparkSessionCatalog",
+            "spark.sql.catalog.spark_catalog.type=hive"
+        ]
+        self.scala_version = scala_version
+        self.spark_version = spark_version
+
+        super().__init__(
+            format_name="iceberg",
+            maven_artifacts=self.iceberg_maven_artifacts(iceberg_version, self.scala_version, self.spark_version),
+            spark_confs=iceberg_spark_confs,
+            benchmark_main_class=benchmark_main_class,
+            main_class_args=main_class_args,
+            **kwargs
+        )
+
+    def update_iceberg_version(self, new_iceberg_version):
+        self.maven_artifacts = \
+            IcebergBenchmarkSpec.iceberg_maven_artifacts(new_iceberg_version, self.scala_version, self.spark_version)
+
+    @staticmethod
+    def iceberg_maven_artifacts(iceberg_version, scala_version, spark_version):
+        return f"org.apache.iceberg:iceberg-spark-runtime-{spark_version}_{scala_version}:{iceberg_version}"
+
+
+class IcebergTPCDSDataLoadSpec(TPCDSDataLoadSpec, IcebergBenchmarkSpec):
+    def __init__(self, iceberg_version, scale_in_gb=1, spark_version="3.1"):
+        super().__init__(iceberg_version=iceberg_version, scale_in_gb=scale_in_gb, spark_version=spark_version)
+
+
+class IcebergTPCDSBenchmarkSpec(TPCDSBenchmarkSpec, IcebergBenchmarkSpec):
+    def __init__(self, iceberg_version, scale_in_gb=1, spark_version="3.1"):
+        super().__init__(iceberg_version=iceberg_version, scale_in_gb=scale_in_gb, spark_version=spark_version)
+
 # ============== Delta benchmark specifications ==============
 
 
